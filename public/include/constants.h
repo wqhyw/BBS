@@ -9,8 +9,8 @@
 #include <stdlib.h>
 #include <memory.h>
 
-#define MAXBUF (20)                        //max buffer size
-#define MAXARG (2)                         //max arg amount
+#define MAX_BUF_LEN      (20)                   //max buffer size
+#define MAX_ARG_LEN      (2)                    //max arg length
 
 /**Client Operation**/
 //operation: client register
@@ -26,7 +26,7 @@
 
 
 /** Character type **/
-#define EOL             (0xE1)             //END OF LINE
-#define VCR             (0xE2)             //VALID CHAR
+#define EOL             (0xE1)                  //END OF LINE
+#define VCR             (0xE2)                  //VALID CHAR
 
 #endif //BBS_CONSTANTS_H
