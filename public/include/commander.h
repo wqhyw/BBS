@@ -6,16 +6,13 @@
 #define BBS_COMMAND_PRASER_H
 
 #include "constants.h"
+#include "msg.h"
 
-int user_input(char*);       //fill user input into buffer
-int get_token(char**);       //get token from input buffer
-int run_cmd(char** args);    //run command got from input
-int check_input(char* s);    //check input format
-void proc_line();            //deal user input line
+int user_input(const char*);            //fill user input into buffer
+int get_token(char**);                  //get token from input buffer
+int run_cmd(MSG*);                      //run command got from input
+int check_input(const char* s);         //check input format
 
-
-void commander();                   //main loop
-
-
+void commander();                       //main loop
 
 #endif //BBS_COMMAND_PRASER_H
