@@ -5,4 +5,9 @@
 #ifndef BBS_INTERPRETOR_H
 #define BBS_INTERPRETOR_H
 
+#include "commander.h"
+#include "config.h"
+
+void quit();
+
 #endif //BBS_INTERPRETOR_H

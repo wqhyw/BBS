@@ -3,10 +3,14 @@
 - [x] ~~main loop~~
 - [x] ~~adjust project structure~~
 - [x] ~~msg structure~~
-- [ ] command praser
-- [ ] command interceptor 
-- [ ] sync process 
-- [ ] async sender 
-- [ ] async receiver(listener) 
-- [ ] user interface 
-- [ ] multi process initialize 
+- [x] ~~client command parser~~
+- [x] ~~client command interceptor~~
+- [x] ~~async sender~~
+- [x] ~~async receiver~~
+- [ ] client user interface
+- [ ] processes initialization
+- [ ] server command parser
+- [ ] server command interceptor
+- [ ] server listener
+- [ ] server handler
+- [ ] integration testing
