@@ -7,7 +7,7 @@
 - [x] ~~client command interceptor~~
 - [x] ~~async sender~~
 - [x] ~~async receiver~~
-- [ ] client user interface
+- [x] ~~client user interface~~
 - [ ] processes initialization
 - [ ] server command parser
 - [ ] server command interceptor
