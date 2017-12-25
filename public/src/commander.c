@@ -5,19 +5,19 @@
 #include "commander.h"
 
 static char INPUT_BUFFER[MAX_BUF_LEN];                            //input buffer
-static MSG* INPUT_MSG;                                            //msg in input buffer
+static MSG *INPUT_MSG;                                            //msg in input buffer
 
 int check_input() {
     INPUT_MSG = parse_msg(INPUT_BUFFER, MAX_BUF_LEN);
 
-    if(INPUT_MSG != NULL && INPUT_MSG->opercode != -1) {
+    if (INPUT_MSG != NULL && INPUT_MSG->opercode != -1) {
         return 1;
     }
 
     return 0;
 }
 
-int user_input(const char* prompt) {
+int user_input(char *buf, const char *prompt) {
     char c;
     int count;
 
@@ -29,20 +29,26 @@ int user_input(const char* prompt) {
         }
 
         if (c != '\n' && count < MAX_BUF_LEN) {
-            INPUT_BUFFER[count++] = c;
+            buf[count++] = c;
         }
 
         if (c == '\n' && count < MAX_BUF_LEN) {
-            INPUT_BUFFER[count] = '\0';
-            if(check_input()) {
+            buf[count] = '\0';
+            if (check_input()) {
                 return count;
             } else {
-                printf("INPUT MUST BE LIKE THIS FORMATE:\n");
-                printf("    COMMAND [CONTEXT]\n");
-                printf("COMMANDS (COMMAND IN LOWER CASE IS FINE):\n");
-                printf("\tREGISTER [YOUR NAME]\n\tLOGIN\n\tSEND [A MESSAGE]\n\tLOGOUT\n\tQUIT\n");
+                LOG("INPUT MUST BE LIKE THIS FORMATE:");
+                LOG("\tCOMMAND [CONTEXT]");
+                LOG("COMMANDS (COMMAND IN LOWER CASE IS FINE):");
+                LOG("\tREGISTER [YOUR NAME]");
+                LOG("\tLOGIN");
+                LOG("\tSEND [A MESSAGE]");
+                LOG("\tLOGOUT");
+                LOG("\tQUIT");
+
                 count = 0;
-                printf("%s ", prompt);
+
+                LOG(prompt);
 
                 continue;
             }
@@ -50,18 +56,21 @@ int user_input(const char* prompt) {
 
         //input too long, re-input
         if (c == '\n') {
-            printf("input line is too long!!!!\n");
+            LOG("input line is too long!!!!");
             count = 0;
-            printf("%s ", prompt);
+            LOG(prompt);
         }
     }
 }
 
 
 void commander() {
-    while (user_input("command>") != EOF) {
-        if(INPUT_MSG->opercode == -1) {
-            printf("%s: cammand not define.\n", msg_to_str(INPUT_MSG));
+    char buf[MAX_BUF_LEN];
+
+    while (user_input(INPUT_BUFFER, "command>") != EOF) {
+        if (INPUT_MSG->opercode == -1) {
+            sprintf(buf, "%s: cammand not define.", msg_to_str(INPUT_MSG));
+            LOG(buf);
         } else {
             run_cmd(INPUT_MSG);
         }

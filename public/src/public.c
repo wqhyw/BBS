@@ -6,14 +6,14 @@
 #include "public.h"
 
 /***************************Msg Definitons***************************/
-MSG* init_msg(int opercode, const char* context, int context_size) {
-    MSG* msg = (MSG*) malloc(sizeof(MSG));
+MSG *init_msg(int opercode, const char *context, int context_size) {
+    MSG *msg = (MSG *) malloc(sizeof(MSG));
 
     msg->opercode = opercode;
-    msg->context = (char*) malloc(sizeof(char) * context_size);
+    msg->context = (char *) malloc(sizeof(char) * context_size);
     msg->context_size = context_size + 1;
 
-    char* p = msg->context;
+    char *p = msg->context;
     for (int i = 0; i < context_size; i++) {
         *p++ = context[i];
     }
@@ -23,9 +23,9 @@ MSG* init_msg(int opercode, const char* context, int context_size) {
     return msg;
 }
 
-char* msg_to_str(MSG* msg) {
+char *msg_to_str(MSG *msg) {
     if (msg != NULL) {
-        char* buf = (char*) malloc(sizeof(char) * msg->context_size);
+        char *buf = (char *) malloc(sizeof(char) * msg->context_size);
         sprintf(buf, "%s%c%s", get_op_str(msg->opercode), (msg->context[0] == '\0') ? '\0' : ' ', msg->context);
 
         return buf;
@@ -34,14 +34,14 @@ char* msg_to_str(MSG* msg) {
     return "";
 }
 
-MSG* parse_msg(const char* s, int size) {
-    MSG* msg = (MSG*) malloc(sizeof(MSG));
+MSG *parse_msg(const char *s, int size) {
+    MSG *msg = (MSG *) malloc(sizeof(MSG));
 
-    char* opstr = (char*) malloc(sizeof(opstr) * MAX_ARG_LEN);
-    char* context = (char*) malloc(sizeof(opstr) * MAX_BUF_LEN);
+    char *opstr = (char *) malloc(sizeof(opstr) * MAX_ARG_LEN);
+    char *context = (char *) malloc(sizeof(opstr) * MAX_BUF_LEN);
 
-    char* p_opstr = opstr;
-    char* p_context = context;
+    char *p_opstr = opstr;
+    char *p_context = context;
 
     int is_blank_ignore = 1;
     int is_fuc_flag = 1;
@@ -92,7 +92,7 @@ MSG* parse_msg(const char* s, int size) {
 
 /*******************************************************************/
 
-char* get_op_str(int opercode) {
+char *get_op_str(int opercode) {
     switch (opercode) {
         case OPER_REGISTER:
             return "REGISTER";
@@ -109,9 +109,9 @@ char* get_op_str(int opercode) {
     }
 }
 
-int get_op_code(const char* operstr, int size) {
+int get_op_code(const char *operstr, int size) {
     // make operstr upper case
-    char* operstr_big = upper(operstr, size);
+    char *operstr_big = upper(operstr, size);
 
     if (!strncmp(operstr_big, "REGISTER", (size_t) size)) {
         return OPER_REGISTER;
@@ -128,9 +128,9 @@ int get_op_code(const char* operstr, int size) {
     }
 }
 
-char* upper(const char* s, int size) {
-    char* ret = (char*) malloc(sizeof(char) * size);
-    char* p = ret;
+char *upper(const char *s, int size) {
+    char *ret = (char *) malloc(sizeof(char) * size);
+    char *p = ret;
 
     for (int i = 0; i < size; i++) {
         if ('a' <= s[i] && s[i] <= 'z') {
@@ -147,14 +147,17 @@ char* upper(const char* s, int size) {
     return ret;
 }
 
-void ret_checker(int ret, const char* prompt) {
+void ret_checker(int ret, const char *prompt) {
+    char buf[MAX_BUF_LEN];
+
     if (ret == -1) {
-        printf("%s error. errmsg[%s], errno[%d].\n", prompt, strerror(errno), errno);
+        sprintf(buf, "%s error. errmsg[%s], errno[%d].\n", prompt, strerror(errno), errno);
+        LOG(buf);
         exit(errno);
     }
 }
 
-struct sockaddr_in init_addr(const char* ip_add, int port) {
+struct sockaddr_in init_addr(const char *ip_add, int port) {
     struct sockaddr_in ret;
 
     ret.sin_family = AF_INET;
@@ -166,7 +169,7 @@ struct sockaddr_in init_addr(const char* ip_add, int port) {
     return ret;
 }
 
-int async_sender(MSG* msg, const char* dest_ip, int dest_port) {
+int async_sender(MSG *msg, const char *dest_ip, int dest_port) {
     int server_fd;
 
     struct sockaddr_in server_add = init_addr(dest_ip, dest_port);
@@ -177,25 +180,28 @@ int async_sender(MSG* msg, const char* dest_ip, int dest_port) {
     );
 
     ret_checker(
-            connect(server_fd, (struct sockaddr*) &server_add, sizeof(struct sockaddr)),
+            connect(server_fd, (struct sockaddr *) &server_add, sizeof(struct sockaddr)),
             "Connect server"
     );
 
-    char* msg_str = msg_to_str(msg);
+    char *msg_str = msg_to_str(msg);
+
+    char buf[MAX_BUF_LEN];
 
     ssize_t send_count = send(server_fd, msg_str, strlen(msg_str), 0);
-    printf("sended [len=%d] [message=%s]\n", (int) send_count, msg_str);
+    sprintf(buf, "sended [len=%d] [message='%s']\n", (int) send_count, msg_str);
+    LOG(buf);
 
     close(server_fd);
 
     return (int) send_count;
 }
 
-int async_recver(const char* local_ip, int local_port, char* buf) {
+int async_recver(const char *local_ip, int local_port, char *buf) {
     int server_fd;
     int client_fd;
 
-    buf = (char*) malloc(sizeof(char) * MAX_BUF_LEN);
+    buf = (char *) malloc(sizeof(char) * MAX_BUF_LEN);
 
     struct sockaddr_in server_add = init_addr(local_ip, local_port);
     struct sockaddr_in client_add;
@@ -211,7 +217,7 @@ int async_recver(const char* local_ip, int local_port, char* buf) {
     setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, (socklen_t) &len);
 
     ret_checker(
-            bind(server_fd, (struct sockaddr*) &server_add, sizeof(struct sockaddr)),
+            bind(server_fd, (struct sockaddr *) &server_add, sizeof(struct sockaddr)),
             "bind"
     );
 
@@ -222,7 +228,7 @@ int async_recver(const char* local_ip, int local_port, char* buf) {
 
     socklen_t sin_size = sizeof(struct sockaddr);
     ret_checker(
-            client_fd = accept(server_fd, (struct sockaddr*) &client_add, &sin_size),
+            client_fd = accept(server_fd, (struct sockaddr *) &client_add, &sin_size),
             "accept"
     );
 
