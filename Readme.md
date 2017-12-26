@@ -1,6 +1,7 @@
 ### DEPENDENCY
 
-- ncurses [download here](http://ftp.gnu.org/gnu/ncurses)
+- ncurses **(5.0.0 or higher)** [download here](http://ftp.gnu.org/gnu/ncurses)
+- cmake **(3.8.0 or higher)** [download here](https://cmake.org/download/)
 
 ### BUILD
 
