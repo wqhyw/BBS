@@ -1,11 +1,11 @@
 ### DEPENDENCY
 
-- ncurses [download here]
+- ncurses [download here](http://ftp.gnu.org/gnu/ncurses)
 
 ### BUILD
 
 ```sh
-    sh build.sh
+sh build.sh
 ```
 
 
