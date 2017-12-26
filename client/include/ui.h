@@ -9,6 +9,7 @@
 #include <panel.h>
 #include <string.h>
 #include "commander.h"
+#include "config.h"
 
 WINDOW *create_newwin(int, int, int, int);
 

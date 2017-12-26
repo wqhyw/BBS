@@ -18,9 +18,6 @@
 #define MAX_BUF_LEN      (512)                   //max buffer size
 #define MAX_ARG_LEN      (16)                    //max arg length
 
-#define SERVER_IP        ("127.0.0.1")
-#define SERVER_PROT      (54321)
-
 /**Client Operation CODE**/
 //operation: client register
 #define OPER_REGISTER   (0xC00)

@@ -11,17 +11,15 @@ void fake_server() {
     int len = sizeof(opt);
     char buffer[MAX_BUF_LEN];
 
-    ssize_t send_count;
-
     ret_checker(
             server_fd = socket(AF_INET, SOCK_STREAM, 0),
             "socket");
 
-    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, (socklen_t) &len);
+    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, (socklen_t) len);
 
     LOG("new server cokect.\n");
 
-    struct sockaddr_in my_addr = init_addr("127.0.0.1", PORT);
+    struct sockaddr_in my_addr = init_addr("127.0.0.1", SERVER_PORT);
     struct sockaddr_in their_addr;
 
     ret_checker(

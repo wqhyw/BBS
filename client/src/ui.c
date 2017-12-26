@@ -117,9 +117,9 @@ int run_cmd(MSG *msg) {
         case OPER_LOGIN:
         case OPER_SEND:
         case OPER_LOGOUT:
-            return async_sender(msg, SERVER_IP, SERVER_PROT);
+            return async_sender(msg, SERVER_IP, SERVER_PORT);
         case OPER_QUIT:
-            async_sender(init_msg(OPER_QUIT, "", 5), SERVER_IP, SERVER_PROT);
+            async_sender(init_msg(OPER_QUIT, "", 5), SERVER_IP, SERVER_PORT);
             quit();
         default:
             LOG("INPUT NOT COMMAND!");

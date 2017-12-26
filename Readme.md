@@ -1,3 +1,14 @@
+### DEPENDENCY
+
+- ncurses [download here]
+
+### BUILD
+
+```sh
+    sh build.sh
+```
+
+
 ### TODO-LIST
 
 - [x] ~~main loop~~

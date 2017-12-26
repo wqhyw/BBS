@@ -214,7 +214,7 @@ int async_recver(const char *local_ip, int local_port, char *buf) {
     //server socket setting
     int opt = 1;
     int len = sizeof(opt);
-    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, (socklen_t) &len);
+    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, (socklen_t) len);
 
     ret_checker(
             bind(server_fd, (struct sockaddr *) &server_add, sizeof(struct sockaddr)),
