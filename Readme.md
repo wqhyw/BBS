@@ -22,11 +22,9 @@ chmod +x client
 - [x] ~~client command parser~~
 - [x] ~~client command interceptor~~
 - [x] ~~async sender~~
-- [x] ~~async receiver~~
 - [x] ~~client user interface~~
-- [x] ~~server listener~~
-- [ ] processes initialization
+- [x] ~~recv loop (or listener)~~
+- [ ] clinet initialization
+- [ ] server initialization
 - [ ] server msg handle
-- [ ] server command interceptor
-- [ ] server handler
 - [ ] integration testing
