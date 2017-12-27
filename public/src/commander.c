@@ -37,18 +37,18 @@ int user_input(char *buf, const char *prompt) {
             if (check_input()) {
                 return count;
             } else {
-                LOG("INPUT MUST BE LIKE THIS FORMATE:");
-                LOG("\tCOMMAND [CONTEXT]");
-                LOG("COMMANDS (COMMAND IN LOWER CASE IS FINE):");
-                LOG("\tREGISTER [YOUR NAME]");
-                LOG("\tLOGIN");
-                LOG("\tSEND [A MESSAGE]");
-                LOG("\tLOGOUT");
-                LOG("\tQUIT");
+                LOG(INFO_LOG, "INPUT MUST BE LIKE THIS FORMATE:");
+                LOG(INFO_LOG, "\tCOMMAND [CONTEXT]");
+                LOG(INFO_LOG, "COMMANDS (COMMAND IN LOWER CASE IS FINE):");
+                LOG(INFO_LOG, "\tREGISTER [YOUR NAME]");
+                LOG(INFO_LOG, "\tLOGIN");
+                LOG(INFO_LOG, "\tSEND [A MESSAGE]");
+                LOG(INFO_LOG, "\tLOGOUT");
+                LOG(INFO_LOG, "\tQUIT");
 
                 count = 0;
 
-                LOG(prompt);
+                LOG(INFO_LOG, prompt);
 
                 continue;
             }
@@ -56,9 +56,9 @@ int user_input(char *buf, const char *prompt) {
 
         //input too long, re-input
         if (c == '\n') {
-            LOG("input line is too long!!!!");
+            LOG(ERROR_LOG, "input line is too long!!!!");
             count = 0;
-            LOG(prompt);
+            LOG(INFO_LOG, prompt);
         }
     }
 }
@@ -70,7 +70,7 @@ void commander() {
     while (user_input(INPUT_BUFFER, "command>") != EOF) {
         if (INPUT_MSG->opercode == -1) {
             sprintf(buf, "%s: cammand not define.", msg_to_str(INPUT_MSG));
-            LOG(buf);
+            LOG(INFO_LOG, buf);
         } else {
             run_cmd(INPUT_MSG);
         }

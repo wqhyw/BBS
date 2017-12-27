@@ -2,13 +2,13 @@
 // Created by leo on 2017/12/25.
 //
 
-#include "ui.h"
+#include "client.h"
 
 static WINDOW *OUTWIN;
-static int ISOUT = 0;
 static int CURRENT_LINE = 1;
 static int LINE_NUM = 1;
-
+static int BACK_GROUD_PID;
+static int CLIENT_QUIT = 0;
 
 WINDOW *create_newwin(int height, int width, int starty, int startx) {
     WINDOW *local_win;
@@ -29,7 +29,7 @@ void destroy_win(WINDOW *local_win) {
     delwin(local_win);
 }
 
-void draw() {
+void ui() {
     WINDOW *input_win;
     PANEL *my_panels[2];
 
@@ -80,12 +80,15 @@ void draw() {
                 }
 
             } else {
-                mvwprintw(OUTWIN, CURRENT_LINE, 1, "[line %2d] ERROR: %s", LINE_NUM++, "INPUT IS TOO LONG");
+                LOG(ERROR_LOG, "INPUT IS TOO LONG!!");
                 break;
             }
         }
 
-        if(ISOUT) {
+        if (CLIENT_QUIT) {
+            LOG(INFO_LOG, "Waiting backgroud quit...");
+            wait(NULL);
+            LOG(INFO_LOG, "Background quited. I am leaving.");
             break;
         }
 
@@ -104,36 +107,42 @@ void draw() {
 
     }
 
+    LOG(INFO_LOG, "Byebye!");
+
     endwin();
 
     destroy_win(OUTWIN);
     destroy_win(input_win);
 }
 
+void listener() {
 
-int run_cmd(MSG *msg) {
+}
+
+void run_cmd(MSG *msg) {
     switch (msg->opercode) {
         case OPER_REGISTER:
         case OPER_LOGIN:
         case OPER_SEND:
         case OPER_LOGOUT:
-            return async_sender(msg, SERVER_IP, SERVER_PORT);
+            async_sender(msg, SERVER_IP, SERVER_PORT);
+            break;
         case OPER_QUIT:
             async_sender(init_msg(OPER_QUIT, "", 5), SERVER_IP, SERVER_PORT);
             quit();
         default:
-            LOG("INPUT NOT COMMAND!");
-            return 0;
+            LOG(ERROR_LOG, "INPUT NOT COMMAND!");
     }
 }
 
 void quit() {
-    LOG("do some cleanning.");
-    ISOUT = 1;
+    LOG(INFO_LOG, "do some cleanning.");
+    kill(BACK_GROUD_PID, SIGQUIT);
+    CLIENT_QUIT = 1;
 }
 
-void LOG(const char* s) {
-    mvwprintw(OUTWIN, CURRENT_LINE, 1, "[line %2d] LOG: %s", LINE_NUM++, s);
+void LOG(const char *prompt, const char *s) {
+    mvwprintw(OUTWIN, CURRENT_LINE, 1, "[line %2d] %s %s", LINE_NUM++, prompt, s);
 
     if (CURRENT_LINE >= LINES - 5) {
         wclear(OUTWIN);
@@ -142,4 +151,9 @@ void LOG(const char* s) {
     }
 
     wrefresh(OUTWIN);
+}
+
+static void ouch(int sig) {
+    LOG(INFO_LOG, "I am listener. I am aksed to quit. Bye!");
+    exit(0);
 }

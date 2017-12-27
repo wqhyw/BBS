@@ -8,6 +8,6 @@
 #include "public.h"
 #include "config.h"
 
-void fake_server();
+static void server_msg_handle(MSG*);
 
 #endif //BBS_HANDLER_H

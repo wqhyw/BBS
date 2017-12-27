@@ -24,9 +24,9 @@ chmod +x client
 - [x] ~~async sender~~
 - [x] ~~async receiver~~
 - [x] ~~client user interface~~
+- [x] ~~server listener~~
 - [ ] processes initialization
-- [ ] server command parser
+- [ ] server msg handle
 - [ ] server command interceptor
-- [ ] server listener
 - [ ] server handler
 - [ ] integration testing

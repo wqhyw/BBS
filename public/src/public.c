@@ -5,6 +5,8 @@
 
 #include "public.h"
 
+int RECV_QUIT = 0;
+
 /***************************Msg Definitons***************************/
 MSG *init_msg(int opercode, const char *context, int context_size) {
     MSG *msg = (MSG *) malloc(sizeof(MSG));
@@ -152,7 +154,7 @@ void ret_checker(int ret, const char *prompt) {
 
     if (ret == -1) {
         sprintf(buf, "%s error. errmsg[%s], errno[%d].\n", prompt, strerror(errno), errno);
-        LOG(buf);
+        LOG(INFO_LOG, buf);
         exit(errno);
     }
 }
@@ -190,18 +192,18 @@ int async_sender(MSG *msg, const char *dest_ip, int dest_port) {
 
     ssize_t send_count = send(server_fd, msg_str, strlen(msg_str), 0);
     sprintf(buf, "sended [len=%d] [message='%s']\n", (int) send_count, msg_str);
-    LOG(buf);
+    LOG(INFO_LOG, buf);
 
     close(server_fd);
 
     return (int) send_count;
 }
 
-int async_recver(const char *local_ip, int local_port, char *buf) {
+void recv_loop(const char *local_ip, int local_port, void (*_msg_handle)(MSG *)) {
+    char buf[MAX_BUF_LEN];
+
     int server_fd;
     int client_fd;
-
-    buf = (char *) malloc(sizeof(char) * MAX_BUF_LEN);
 
     struct sockaddr_in server_add = init_addr(local_ip, local_port);
     struct sockaddr_in client_add;
@@ -226,16 +228,26 @@ int async_recver(const char *local_ip, int local_port, char *buf) {
             "listen"
     );
 
-    socklen_t sin_size = sizeof(struct sockaddr);
-    ret_checker(
-            client_fd = accept(server_fd, (struct sockaddr *) &client_add, &sin_size),
-            "accept"
-    );
+    LOG(INFO_LOG, "Listening...");
 
-    ssize_t recv_size = recv(client_fd, buf, MAX_BUF_LEN, 0);
+    while (1) {
+        socklen_t sin_size = sizeof(struct sockaddr);
+        ret_checker(
+                client_fd = accept(server_fd, (struct sockaddr *) &client_add, &sin_size),
+                "accept"
+        );
 
-    close(client_fd);
+        recv(client_fd, buf, MAX_BUF_LEN, 0);
+
+        _msg_handle(parse_msg(buf, MAX_BUF_LEN));
+
+        if(RECV_QUIT) {
+            LOG(INFO_LOG, "Byebye!");
+            break;
+        }
+
+        close(client_fd);
+    }
+
     close(server_fd);
-
-    return (int) recv_size;
 }

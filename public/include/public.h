@@ -7,6 +7,12 @@
 
 #include "constants.h"
 
+/**Log Prompts**/
+#define ERROR_LOG ("ERROR:")
+#define INFO_LOG  ("INFO:")
+
+extern int RECV_QUIT;
+
 /**Message Definition**/
 typedef struct _msg {
     int opercode;
@@ -34,8 +40,10 @@ void ret_checker(int, const char *);              //check status of socket funct
 
 int async_sender(MSG *, const char *, int);
 
-int async_recver(const char *, int, char *);
+void recv_loop(const char *, int, void (*)(MSG *));
 
-void LOG(const char *);
+void LOG(const char *, const char *);
+
+void run_cmd(MSG *);                      //run command got from input
 
 #endif //BBS_PUBLIC_H
