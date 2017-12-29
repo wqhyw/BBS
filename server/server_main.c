@@ -7,4 +7,3 @@
 int main() {
     recv_loop(SERVER_IP, SERVER_PORT, server_msg_handle);
 }
-

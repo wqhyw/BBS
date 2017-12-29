@@ -8,6 +8,6 @@
 #include "public.h"
 #include "config.h"
 
-static void server_msg_handle(MSG*);
+void server_msg_handle(MSG*);
 
 #endif //BBS_HANDLER_H

@@ -4,7 +4,7 @@
 
 #include "handler.h"
 
-static void server_msg_handle(MSG* msg) {
+void server_msg_handle(MSG* msg) {
     if(msg->opercode == OPER_QUIT) {
         RECV_QUIT = 1;
     } else {
